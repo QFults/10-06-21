@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import axios from 'axios'
 import AddGifForm from './components/AddGifForm'
 import StoredGifCard from './components/StoredGifCard'
 import SearchGifForm from './components/SearchGifForm'
 
 const App = () => {
   const [gifState, setGifState] = useState({
+    query: '',
     title: '',
     still: '',
     animated: '',
@@ -37,13 +39,39 @@ const App = () => {
     setGifState({ ...gifState, storedGifs })
   }
 
+  const handleDeleteGif = still => {
+    console.log(still)
+    let storedGifs = JSON.parse(JSON.stringify(gifState.storedGifs))
+    storedGifs = storedGifs.filter(gif => gif.still !== still)
+    setGifState({ ...gifState, storedGifs })
+  }
+
+  const handleSearchGif = event => {
+    event.preventDefault()
+    axios.get(`https://api.giphy.com/v1/gifs/search?api_key=j6yOF05YP8AGwMifwqeDBZ1RYjr4n0Tj&q=${gifState.query}`)
+      .then(({ data: { data: gifs } }) => {
+        const gif = gifs[Math.floor(Math.random() * gifs.length)]
+        setGifState({
+          ...gifState,
+          title: gif.title,
+          still: gif.images.original_still.url,
+          animated: gif.images.original.url,
+          // query: ''
+        })
+      })
+      .catch(err => console.error(err))
+  }
+
   return (
     <div className="container">
       <div class="row bg-light p-5 rounded-lg mb-3">
         <h1 class="display-4">Gif Collector</h1>
         <p class="lead">This is a simple app to collect gifs you want to save and view at a later date. It also allows you to pause/play the gifs at your own discretion.</p>
         <hr class="my-4" />
-        <SearchGifForm />
+        <SearchGifForm
+        query={gifState.query}
+        handleInputChange={handleInputChange}
+        handleSearchGif={handleSearchGif} />
       </div>
       <div className="row">
         <div className="col-sm-6">
@@ -71,7 +99,8 @@ const App = () => {
                still={still}
                animated={animated}
                active={active}
-               handleSetActive={handleSetActive} />
+               handleSetActive={handleSetActive}
+               handleDeleteGif={handleDeleteGif} />
             ))
           }
         </div>

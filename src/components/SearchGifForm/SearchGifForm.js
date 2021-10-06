@@ -1,4 +1,8 @@
-const SearchGifForm = () => {
+const SearchGifForm = ({
+  query,
+  handleInputChange,
+  handleSearchGif
+}) => {
   return (
     <form>
       <div className="mb-3">
@@ -6,12 +10,14 @@ const SearchGifForm = () => {
         <input
           type="text"
           className="form-control"
-          name='query' />
+          name='query'
+          value={query}
+          onChange={handleInputChange} />
       </div>
       <button
         type="submit"
         className="btn btn-primary"
-      >
+        onClick={handleSearchGif} >
         Search for a Gif
       </button>
     </form>

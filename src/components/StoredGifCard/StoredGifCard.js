@@ -3,7 +3,8 @@ const StoredGifCard = ({
   still,
   animated,
   active,
-  handleSetActive
+  handleSetActive,
+  handleDeleteGif
 }) => {
   return (
     <div className="card">
@@ -28,6 +29,11 @@ const StoredGifCard = ({
             </button>
           )
         }
+        <button
+          className="btn btn-danger"
+          onClick={() => handleDeleteGif(still)} >
+          Delete
+        </button>
       </div>
     </div>
   )
