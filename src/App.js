@@ -27,6 +27,16 @@ const App = () => {
     setGifState({ ...gifState, storedGifs, title: '', still: '', animated: '' })
   }
 
+  const handleSetActive = (prevUrl, newUrl) => {
+    const storedGifs = JSON.parse(JSON.stringify(gifState.storedGifs))
+    storedGifs.forEach(gif => {
+      if (gif.active === prevUrl) {
+        gif.active = newUrl
+      }
+    })
+    setGifState({ ...gifState, storedGifs })
+  }
+
   return (
     <div className="container">
       <div class="row bg-light p-5 rounded-lg mb-3">
@@ -50,7 +60,19 @@ const App = () => {
           <h3>View Stored Gifs</h3>
           <hr />
           {
-            gifState.storedGifs.map(gif => <StoredGifCard />)
+            gifState.storedGifs.map(({
+              title,
+              still,
+              animated,
+              active
+            }) => (
+              <StoredGifCard
+               title={title}
+               still={still}
+               animated={animated}
+               active={active}
+               handleSetActive={handleSetActive} />
+            ))
           }
         </div>
       </div>
